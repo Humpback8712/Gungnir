@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+option go_package = "./pb_go";
+
+message HealthCheckRequest {
+  string clusterName = 1;
+}
+
+message HealthPackage {
+  string clusterName = 1;
+  string status = 2;
+  string info = 3;
+}
+
+service Health {
+  rpc Keep(stream HealthCheckRequest) returns (stream HealthPackage);
+}
