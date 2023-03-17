@@ -1,24 +1,31 @@
 package master
 
-import "Gungnir/internal/master/rest/server"
+import (
+	G_mq "Gungnir/internal/master/G-mq"
+	"Gungnir/internal/master/httphandler"
+	"Gungnir/internal/master/httpserver"
+	"Gungnir/internal/master/nodemanager"
+)
 
 type Master struct {
-	// clientPool
-	// rpcclient
-	httpServer *server.Server
+	httpServer  *httpserver.Httpserver
+	httpHandler *httphandler.Httphandler
+	nodeManager *nodemanager.Nodemanager
+	gmq         *G_mq.Gmq
 }
 
+// New init all components
 func New() *Master {
-	return &Master{}
+	return &Master{
+		httpServer:  httpserver.GetHttpServerOr(),
+		httpHandler: httphandler.GetHttpHandlerOr(),
+		nodeManager: nodemanager.GetNodeMangerOr(),
+		gmq:         G_mq.GetMqOr(),
+	}
 }
 
 func (m *Master) Start() error {
-
-	// run http server
-	err := m.httpServer.Run()
-
-	if err != nil {
-		return err
-	}
+	m.nodeManager.Run()
+	m.httpServer.Run()
 	return nil
 }
