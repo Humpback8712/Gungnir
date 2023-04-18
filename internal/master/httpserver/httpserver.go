@@ -30,7 +30,6 @@ func (h *Httpserver) GetEngine() *gin.Engine {
 }
 
 func (h *Httpserver) Run() {
-	// run server
 	if err := h.e.Run(h.Port); err != nil {
 		panic(err)
 	}

@@ -11,19 +11,15 @@ type AgentServer struct {
 }
 
 func (s *AgentServer) Keep(stream pb_go.Health_KeepServer) error {
-	//stream.Send(&pb_go.HealthPackage{
-	//	ClusterName: "testing",
-	//	Status:      "Running",
-	//})
-	//in, err := stream.Recv()
-	//log.Println(in)
 	for {
 		// 接收流式请求
 		in, err := stream.Recv()
 		if err == io.EOF {
+			log.Println(err)
 			return nil
 		}
 		if err != nil {
+			log.Println(err)
 			return err
 		}
 		log.Println(in)
