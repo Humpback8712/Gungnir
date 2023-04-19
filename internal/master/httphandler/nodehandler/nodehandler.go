@@ -22,9 +22,11 @@ func (n *Nodehandler) Hi(c *gin.Context) {
 }
 
 func (n *Nodehandler) Connect(c *gin.Context) {
+	clusterName := c.Query("clusterName")
+	addr := c.Query("address")
 	G_mq.GetMqOr().NodeConnectionChan <- &G_mq.NodeConnectionMsg{
-		Name: "12",
-		Addr: "127.0.0.1:8889",
+		Name: clusterName,
+		Addr: addr,
 	}
 	c.String(http.StatusOK, "plz wait")
 }

@@ -28,7 +28,7 @@ func RunGRPC() error {
 }
 
 func ConnectMaster() {
-	url := "http://127.0.0.1:8888/connect"
+	url := "http://127.0.0.1:8888/connect?clusterName=testCluster&address=127.0.0.1:8889"
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {

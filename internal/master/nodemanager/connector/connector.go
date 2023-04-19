@@ -2,6 +2,7 @@ package connector
 
 import (
 	G_mq "Gungnir/internal/master/G-mq"
+	"Gungnir/internal/master/nodemanager/clientpool"
 	"Gungnir/pkg/grpc/pb_go"
 	"context"
 	"google.golang.org/grpc"
@@ -17,7 +18,8 @@ func New() *Connector {
 	return &Connector{}
 }
 func (c *Connector) Connect(msg *G_mq.NodeConnectionMsg) {
-	conn, err := grpc.Dial("127.0.0.1:8889", grpc.WithTransportCredentials(insecure.NewCredentials()))
+
+	conn, err := grpc.Dial(msg.Addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 	}
@@ -29,6 +31,12 @@ func (c *Connector) Connect(msg *G_mq.NodeConnectionMsg) {
 	if err != nil {
 		log.Println(err)
 	}
+	// add client into client pool
+	go func() {
+		pool := clientpool.GetClientPoolOr()
+		pool.AddClient(msg.Addr, conn)
+	}()
+	// health connect
 	go func() {
 		for {
 			err = stream.Send(&pb_go.HealthCheckRequest{

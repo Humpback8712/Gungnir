@@ -23,3 +23,7 @@ message HealthPackage {
 service Health {
   rpc Keep(stream HealthCheckRequest) returns (stream HealthPackage);
 }
+
+service Job {
+
+}

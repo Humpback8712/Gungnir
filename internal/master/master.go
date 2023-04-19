@@ -5,18 +5,21 @@ import (
 	"Gungnir/internal/master/httphandler"
 	"Gungnir/internal/master/httpserver"
 	"Gungnir/internal/master/nodemanager"
+	"Gungnir/internal/master/nodemanager/clientpool"
 )
 
 type Master struct {
 	httpServer  *httpserver.Httpserver
 	httpHandler *httphandler.Httphandler
 	nodeManager *nodemanager.Nodemanager
+	clientpool  *clientpool.ClientPool
 	gmq         *G_mq.Gmq
 }
 
 // New init all components
 func New() *Master {
 	return &Master{
+		clientpool:  clientpool.New(),
 		httpServer:  httpserver.GetHttpServerOr(),
 		httpHandler: httphandler.GetHttpHandlerOr(),
 		nodeManager: nodemanager.GetNodeMangerOr(),
