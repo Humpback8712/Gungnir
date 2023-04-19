@@ -6,10 +6,18 @@ message HealthCheckRequest {
   string clusterName = 1;
 }
 
+message Resource {
+  float cpuTotal = 1;
+  float cpuRest = 2;
+  float diskTotal = 3;
+  float diskRest = 4;
+}
+
 message HealthPackage {
   string clusterName = 1;
   string status = 2;
   string info = 3;
+  Resource resource = 4;
 }
 
 service Health {

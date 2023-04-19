@@ -31,7 +31,9 @@ func (c *Connector) Connect(msg *G_mq.NodeConnectionMsg) {
 	}
 	go func() {
 		for {
-			err = stream.Send(&pb_go.HealthCheckRequest{ClusterName: "localhost testing"})
+			err = stream.Send(&pb_go.HealthCheckRequest{
+				ClusterName: "master",
+			})
 			if err != nil {
 				log.Println(err)
 			}

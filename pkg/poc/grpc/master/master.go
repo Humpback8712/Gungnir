@@ -28,7 +28,11 @@ func main() {
 	}
 	go func() {
 		for {
-			err = stream.Send(&pb_go.HealthCheckRequest{ClusterName: "hi"})
+			err = stream.Send(&pb_go.HealthPackage{
+				ClusterName: "",
+				Status:      "",
+				Info:        "",
+			})
 			if err != nil {
 				fmt.Println(err)
 			}
