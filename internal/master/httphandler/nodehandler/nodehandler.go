@@ -12,6 +12,11 @@ import (
 type Nodehandler struct {
 }
 
+type TaskRequest struct {
+	CPU    int64 `form:"cpu" binding:"required"`
+	Memory int64 `form:"memory" binding:"required"`
+}
+
 func New() *Nodehandler {
 	return &Nodehandler{}
 }
@@ -31,7 +36,9 @@ func (n *Nodehandler) Connect(c *gin.Context) {
 	c.String(http.StatusOK, "plz wait")
 }
 
-func (n *Nodehandler) UploadFile(c *gin.Context) {
+func (n *Nodehandler) UploadJob(c *gin.Context) {
+
+	// get file
 	file, header, err := c.Request.FormFile("file")
 	if err != nil {
 		log.Println("Error getting file:", err)
@@ -42,8 +49,15 @@ func (n *Nodehandler) UploadFile(c *gin.Context) {
 	}
 	defer file.Close()
 
-	// 将上传的文件保存到本地文件系统
-	saveFilePath := "./" + header.Filename
+	// get params
+	var taskReq TaskRequest
+	if err := c.ShouldBind(&taskReq); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// save file
+	saveFilePath := "./job/" + header.Filename
 	f, err := os.Create(saveFilePath)
 	if err != nil {
 		log.Println("Error creating file:", err)
@@ -60,7 +74,15 @@ func (n *Nodehandler) UploadFile(c *gin.Context) {
 		})
 		return
 	}
-
 	defer f.Close()
+
+	// start scheduler
+	G_mq.GetMqOr().JobStartSchedulerChan <- &G_mq.JobStartSchedulerMsg{
+		Name:   header.Filename,
+		Path:   saveFilePath,
+		Cpu:    int(taskReq.CPU),
+		Memory: int(taskReq.Memory),
+	}
+
 	c.String(200, "ok")
 }

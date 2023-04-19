@@ -30,8 +30,9 @@ func GetHttpHandlerOr() *Httphandler {
 }
 
 func (h *Httphandler) Register() {
+	
 	h.e.GET("hi", h.nodeHandler.Hi)
 	h.e.GET("connect", h.nodeHandler.Connect)
-	// testing
-	h.e.POST("upload/file/test", h.nodeHandler.UploadFile)
+	h.e.POST("upload/job", h.nodeHandler.UploadJob)
+
 }

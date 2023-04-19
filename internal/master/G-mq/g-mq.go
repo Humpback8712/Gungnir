@@ -6,14 +6,22 @@ type NodeConnectionMsg struct {
 	Name string
 	Addr string
 }
+type JobStartSchedulerMsg struct {
+	Name   string
+	Path   string
+	Cpu    int
+	Memory int
+}
 
 type Gmq struct {
-	NodeConnectionChan chan *NodeConnectionMsg
+	NodeConnectionChan    chan *NodeConnectionMsg
+	JobStartSchedulerChan chan *JobStartSchedulerMsg
 }
 
 func New() {
 	GMQ = &Gmq{
-		NodeConnectionChan: make(chan *NodeConnectionMsg),
+		NodeConnectionChan:    make(chan *NodeConnectionMsg),
+		JobStartSchedulerChan: make(chan *JobStartSchedulerMsg),
 	}
 }
 
